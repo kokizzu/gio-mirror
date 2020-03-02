@@ -48,8 +48,8 @@ type List struct {
 	fromEnd    bool
 
 	len        int
-	firstDrawn int
-	lastDrawn  int
+	FirstDrawn int
+	LastDrawn  int
 
 	// maxSize is the total size of visible children.
 	maxSize  int
@@ -104,16 +104,20 @@ func (l *List) init(gtx *Context, len int) {
 	l.update()
 	if l.doScrollTo {
 		if l.scrollTo >= len {
-			l.scrollTo = len - 1
+			if len > 0 {
+				l.scrollTo = len - 1
+			} else {
+				l.scrollTo = 0
+			}
 		}
 		// If l.scrollTo is already in view, do nothing.
-		if l.firstDrawn < l.scrollTo &&
-			l.scrollTo < l.lastDrawn {
+		if l.FirstDrawn < l.scrollTo &&
+			l.scrollTo < l.LastDrawn {
 			l.doScrollTo = false
 		} else {
 			l.Position.Offset = 0
 			l.Position.First = l.scrollTo
-			if l.lastDrawn > 0 && l.scrollTo >= l.lastDrawn {
+			if l.LastDrawn > 0 && l.scrollTo >= l.LastDrawn {
 				l.fromEnd = true
 				l.Position.First++
 			} else {
@@ -293,8 +297,8 @@ func (l *List) layout() Dimensions {
 		pos += space
 	}
 	if len(children) > 0 {
-		l.firstDrawn = children[0].index
-		l.lastDrawn = children[len(children)-1].index
+		l.FirstDrawn = children[0].index
+		l.LastDrawn = children[len(children)-1].index
 	}
 	for _, child := range children {
 		sz := child.size
