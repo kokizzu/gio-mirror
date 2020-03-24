@@ -52,6 +52,9 @@ func (c *checkable) layout(gtx *layout.Context, checked bool) {
 		}),
 
 		layout.Rigid(func() {
+			if c.Label == "" {
+				return
+			}
 			gtx.Constraints.Width.Min = hmin
 			gtx.Constraints.Height.Min = vmin
 			layout.W.Layout(gtx, func() {
